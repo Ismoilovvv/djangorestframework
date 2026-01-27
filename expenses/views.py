@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from .models import Expense
 from .serializers import ExpenseSerializer
 
-
 @api_view(['GET', 'POST'])
 def expense_list(request):
     if request.method == 'GET':
@@ -16,15 +15,14 @@ def expense_list(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=400)
-
-@api_view(['GET', 'PUT', 'DELETE'])      
+        return Response(serializer.errors, status=400)
+    
+@api_view(['GET', 'PUT', 'DELETE'])
 def expense_detail(request, id):
     try:
         expense = Expense.objects.get(id=id)
     except Expense.DoesNotExist:
-        return Response({'error': 'Expense not found'}, status=404)
+        return Response({'error': 'Expense not found!'}, status=404)
     
     if request.method == 'GET':
         serializer = ExpenseSerializer(expense)
@@ -40,4 +38,3 @@ def expense_detail(request, id):
     if request.method == 'DELETE':
         expense.delete()
         return Response(status=204)
-
