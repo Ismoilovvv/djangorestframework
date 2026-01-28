@@ -1,40 +1,40 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Expense
-from .serializers import ExpenseSerializer
+from .models import Task
+from .serializers import TaskSerializer
 
 @api_view(['GET', 'POST'])
-def expense_list(request):
+def task_list(request):
     if request.method == 'GET':
-        expenses = Expense.objects.all()
-        serializer = ExpenseSerializer(expenses, many=True)
+        tasks = Task.objects.all()
+        serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data)
     
     if request.method == 'POST':
-        serializer = ExpenseSerializer(data=request.data)
+        serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
     
 @api_view(['GET', 'PUT', 'DELETE'])
-def expense_detail(request, id):
+def task_detail(request, id):
     try:
-        expense = Expense.objects.get(id=id)
-    except Expense.DoesNotExist:
-        return Response({'error': 'Expense not found!'}, status=404)
+        task = Task.objects.get(id=id)
+    except Task.DoesNotExist:
+        return Response({'error': 'Task not found!'}, status=404)
     
     if request.method == 'GET':
-        serializer = ExpenseSerializer(expense)
+        serializer = TaskSerializer(task)
         return Response(serializer.data)
     
     if request.method == 'PUT':
-        serializer = ExpenseSerializer(expense, data=request.data)
+        serializer = TaskSerializer(task, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
     
     if request.method == 'DELETE':
-        expense.delete()
-        return Response(status=204)
+        task.delete()
+        return Response({'message': 'Task deleted!'}, status=204)
