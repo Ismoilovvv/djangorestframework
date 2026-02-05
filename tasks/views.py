@@ -4,13 +4,18 @@ from .models import Task
 from .serializers import TaskSerializer
 
 class TaskList(generics.ListCreateAPIView):
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    lookup_field = 'id'
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    lookup_field = 'id'
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
