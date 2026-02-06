@@ -1,9 +1,9 @@
 from django.db import models 
-from django.conf import settings 
+from django.contrib.auth.models import User 
 
 class Expense(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name='expenses'
     )
